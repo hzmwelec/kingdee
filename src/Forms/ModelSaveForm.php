@@ -1,0 +1,62 @@
+<?php
+
+namespace Hzmwelec\Kingdee\Forms;
+
+use Hzmwelec\Kingdee\Concerns\RemapsFormData;
+use Hzmwelec\Kingdee\Contracts\Form;
+
+class ModelSaveForm implements Form
+{
+    use RemapsFormData;
+
+    /**
+     * @var \Hzmwelec\Kingdee\Contracts\Model
+     */
+    protected $model;
+
+    /**
+     * @var array
+     */
+    protected $data;
+
+    /**
+     * @param \Hzmwelec\Kingdee\Contracts\Model $model
+     * @param array $data
+     */
+    public function __construct($model, $data)
+    {
+        $this->model = $model;
+        $this->data = $data;
+    }
+
+    /**
+     * @param \Hzmwelec\Kingdee\Contracts\Model $model
+     * @param array $data
+     * @return static
+     */
+    public static function make($model, $data)
+    {
+        return new static($model, $data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormId()
+    {
+        return $this->model->getFormId();
+    }
+
+    /**
+     * @return array
+     */
+    public function getFormData()
+    {
+        return [
+            'Model' => static::remapFormData(
+                $this->data,
+                $this->model->mapAttributesToFields()
+            )
+        ];
+    }
+}
